@@ -1,0 +1,93 @@
+{
+  "lintOptions": {
+    "typeCheck": true
+  },
+  "rules": {
+    "ban": [
+      true,
+      [
+        "describe",
+        "only"
+      ],
+      [
+        "it",
+        "only"
+      ]
+    ],
+    "comment-format": [
+      true,
+      "check-space"
+    ],
+    "completed-docs": false,
+    "cyclomatic-complexity": false,
+    "file-header": [
+      true,
+      "Copyright \\d{4} Wunderscore Development"
+    ],
+    "increment-decrement": false,
+    "interface-name": false,
+    "linebreak-style": false,
+    "max-classes-per-file": false,
+    "max-line-length": [
+      true,
+      140
+    ],
+    "member-access": true,
+    "member-ordering": [
+      true,
+      "public-before-private",
+      "static-before-instance",
+      "variables-before-functions"
+    ],
+    "newline-before-return": false,
+    "newline-per-chained-call": false,
+    "no-any": false,
+    "no-console": {
+      "options": [
+        "log"
+      ]
+    },
+    "no-magic-numbers": false,
+    "no-non-null-assertion": false,
+    "no-null-keyword": false,
+    "no-parameter-properties": false,
+    "no-parameter-reassignment": false,
+    "no-require-imports": false,
+    "no-switch-case-fall-through": true,
+    "no-unbound-method": false,
+    "no-unnecessary-qualifier": false,
+    "no-unused-variable": false,
+    "no-use-before-declare": false,
+    "no-void-expression": false,
+    "only-arrow-functions": [
+      true,
+      "allow-declarations",
+      "allow-named-functions"
+    ],
+    "prefer-function-over-method": false,
+    "strict-boolean-expressions": [
+      true,
+      "allow-boolean-or-undefined"
+    ],
+    "strict-type-predicates": false,
+    "switch-default": false,
+    "triple-equals": [
+      true,
+      "allow-undefined-check"
+    ],
+    "typedef": false,
+    "variable-name": [
+      true,
+      "ban-keywords",
+      "check-format",
+      "allow-leading-underscore",
+      "allow-pascal-case"
+    ]
+  },
+  "rulesDirectory": [
+    "node_modules/tslint/lib/rules",
+    "node_modules/tslint-clean-code/dist/src",
+    "node_modules/tslint-microsoft-contrib",
+    "node_modules/tslint-sonarts/lib/rules"
+  ]
+}

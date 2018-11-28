@@ -1,0 +1,67 @@
+{
+  "dependencies": {
+    "@types/node": "latest"
+  },
+  "description": "",
+  "devDependencies": {
+    "@types/jest": "latest",
+    "concurrently": "latest",
+    "eslint": "latest",
+    "eslint-plugin-tslint": "latest",
+    "eslint-plugin-typescript": "latest",
+    "foreach-cli": "latest",
+    "jest": "latest",
+    "jsonlint ": "latest",
+    "nodemon": "latest",
+    "ts-jest": "latest",
+    "ts-node": "latest",
+    "tsconfig-paths": "latest",
+    "tslint": "latest",
+    "tslint-clean-code": "latest",
+    "tslint-microsoft-contrib": "latest",
+    "tslint-sonarts": "latest",
+    "typescript": "latest",
+    "typescript-eslint-parser": "latest"
+  },
+  "eslintConfig": {
+    "env": {
+      "browser": true,
+      "node": true
+    },
+    "extends": ["eslint:recommended"],
+    "parser": "typescript-eslint-parser",
+    "plugins": ["typescript", "tslint"],
+    "rules": {
+      "tslint/config": [
+        "warn",
+        {
+          "configFile": "tsconfig.json",
+          "lintFile": "tslint.json"
+        }
+      ]
+    }
+  },
+  "jest": {
+    "coverageDirectory": "../coverage",
+    "moduleFileExtensions": ["js", "json", "ts"],
+    "rootDir": "src",
+    "testEnvironment": "node",
+    "testRegex": ".spec.ts$",
+    "transform": {
+      "^.+\\.(t|j)s$": "ts-jest"
+    }
+  },
+  "keywords": [],
+  "main": "src/index.ts",
+  "name": "miner-base-task",
+  "scripts": {
+    "lint": "concurrently yarn:lint:*",
+    "lint:es": "eslint src --ext ts,js",
+    "lint:json": "foreach -g \"*.json\" -x \"jsonlint #{path} -sqip\"",
+    "start": "nodemon src/index.ts",
+    "start:dev": "nodemon",
+    "test": "jest",
+    "test:w": "jest --watchAll"
+  },
+  "version": "1.0.0"
+}
