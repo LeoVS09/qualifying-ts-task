@@ -53,7 +53,7 @@
   },
   "keywords": [],
   "main": "src/index.ts",
-  "name": "miner-base-task",
+  "name": "qualifying-ts-task",
   "scripts": {
     "lint": "concurrently yarn:lint:*",
     "lint:es": "eslint src --ext ts,js",
