@@ -28,9 +28,14 @@
       "browser": true,
       "node": true
     },
-    "extends": ["eslint:recommended"],
+    "extends": [
+      "eslint:recommended"
+    ],
     "parser": "typescript-eslint-parser",
-    "plugins": ["typescript", "tslint"],
+    "plugins": [
+      "typescript",
+      "tslint"
+    ],
     "rules": {
       "tslint/config": [
         "warn",
@@ -43,7 +48,11 @@
   },
   "jest": {
     "coverageDirectory": "../coverage",
-    "moduleFileExtensions": ["js", "json", "ts"],
+    "moduleFileExtensions": [
+      "js",
+      "json",
+      "ts"
+    ],
     "rootDir": "src",
     "testEnvironment": "node",
     "testRegex": ".spec.ts$",
