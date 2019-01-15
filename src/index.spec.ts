@@ -1,175 +1,67 @@
-import Miner from './index'
-import fetch from './plugins/fetch'
-import pick from './plugins/pick'
-import pipe from './plugins/pipe'
+import { grabLinks, grabPaginationLinks, search } from "./index";
 
-const samples = {
-  URL: 'https://stackoverflow.com',
-  selector: `
-    .question-summary@questions|slice(0, 3) {
-      .question-hyperlink[href=$link]{$title};
-      .votes span[title=$votes];
-      .status span[title=$answers];
-      .views span[title=$views];
-      .started .relativetime[title=$time];
-      .started .reputation-score{$score};
-    }
-  `
-}
+const samples = {};
 
-describe('Basic level suit', () => {
+describe("Search engine", () => {
+  test("Grab links from github", async () => {
+    const links = await grabLinks("https://github.com/griddb/griddb_nosql", [
+      ".markdown-body.entry-content li a"
+    ]);
 
-  test('Server response status as 200', async () => {
-    const { status } = await fetch(samples.URL)
+    expect(links).toContain("https://github.com/griddb/griddb_client");
+  });
 
-    expect(status).toEqual(200)
-  })
+  test("Grab links from habr", async () => {
+    const links = await grabLinks(
+      "https://habr.com/flows/develop/top/yearly/",
+      [".post__text.post__text-html.js-mediator-article a"]
+    );
 
+    expect(links).toContain("http://frdocheck.obrnadzor.gov.ru/");
+    expect(links).not.toContain("https://habr.com/post/347760/");
+  });
 
-  test('Server response body as HTML', async () => {
-    const { body } = await fetch(samples.URL)
+  test("Search links with pagination", async () => {
+    const links = await grabLinks("https://github.com/griddb/griddb_nosql", [
+      ".mw-search-result-heading a"
+    ]);
 
-    expect(body).toMatch('question-summary')
-  })
+    expect(links).toContain(
+      "https://ru.wikipedia.org/wiki/%D0%A0%D0%BE%D0%BC%D0%B5%D0%BE_%D0%B8_%D0%94%D0%B6%D1%83%D0%BB%D1%8C%D0%B5%D1%82%D1%82%D0%B0"
+    );
+  });
+});
 
+describe("Intermediate level suit", () => {
+  test("Search page containing text", async () => {
+    const pages = await search(
+      "https://ru.wikipedia.org/wiki/%D0%94%D0%B0%D0%BD%D1%82%D0%B5_%D0%90%D0%BB%D0%B8%D0%B3%D1%8C%D0%B5%D1%80%D0%B8",
+      "сосредоточиться на управлении своим новым австрийским герцогством"
+    );
 
-  test('Extract data from HTML', async () => {
-    const { body } = await fetch(samples.URL)
-    const data = await pick(samples.selector, body)
+    const links = pages.map(p => p.url);
 
-    expect(data.questions[0]).toHaveProperty('score')
-  })
+    expect(links).toContain(
+      "https://ru.wikipedia.org/wiki/%D0%90%D0%BB%D1%8C%D0%B1%D1%80%D0%B5%D1%85%D1%82_I_(%D0%BA%D0%BE%D1%80%D0%BE%D0%BB%D1%8C_%D0%93%D0%B5%D1%80%D0%BC%D0%B0%D0%BD%D0%B8%D0%B8)"
+    );
+    expect(links).not.toContain(
+      "https://ru.wikipedia.org/wiki/%D0%A0%D1%83%D0%B4%D0%BE%D0%BB%D1%8C%D1%84_II_(%D0%B3%D0%B5%D1%80%D1%86%D0%BE%D0%B3_%D0%90%D0%B2%D1%81%D1%82%D1%80%D0%B8%D0%B8)"
+    );
+  });
 
+  test("Get data from searching page", async () => {
+    const pages = await search(
+      "https://ru.wikipedia.org/wiki/%D0%9B%D0%B5%D0%BE%D0%BD%D0%B0%D1%80%D0%B4%D0%BE_%D0%B4%D0%B0_%D0%92%D0%B8%D0%BD%D1%87%D0%B8",
+      "расстояние между двумя плоскостями",
+      {
+        subHeaders: "h3 .mw-headline"
+      }
+    );
 
-  test('Tranform data to array of top 3 remapped objects', async () => {
-    const { body } = await fetch(samples.URL)
-    const data = await pick(samples.selector, body)
-    const piped = await pipe(function(){}, data)
+    const pagesSubHeaders = pages
+      .map(p => p.data.subHeaders)
+      .reduce((result, data) => result.push(...data), []);
 
-    expect(piped[1]).not.toHaveProperty('score')
-    expect(piped[1]).toHaveProperty('link')
-    expect(piped).toHaveLength(3)
-  })
-
-})
-
-describe('Intermediate level suit', () => {
-
-  /* Раскомментируйте содержимое теста 
-  и разработайте функциональную часть, ему удовлетворяющую */
-
-  test('Chaining actions', async () => {
-    // const miner = await new Miner()
-    // const chained = miner
-    //   .fetch(samples.URL)
-    //   .pick(samples.selector)
-    //   .pipe(function(){})
-
-    // expect(chained[1]).not.toHaveProperty('score')
-    // expect(chained[1]).toHaveProperty('link')
-    // expect(chained).toHaveLength(3)
-  })
-
-
-  /* Раскомментируйте содержимое теста 
-  и разработайте функциональную часть, ему удовлетворяющую */
-
-  test('Branching chains', async () => {
-    // const miner = await new Miner()
-    // const fetched = miner.fetch(samples.URL)
-    // const picked = fetched.pick(samples.selector)
-    // const piped = picked.pipe(function(){})
-
-    // expect(piped[1]).not.toHaveProperty('score')
-    // expect(piped[1]).toHaveProperty('link')
-    // expect(piped).toHaveLength(3)
-  })
-
-
-  /* Раскомментируйте содержимое теста 
-  и разработайте функциональную часть, ему удовлетворяющую */
-
-  test('Concurrent actions', async () => {
-    // const miner = await new Miner()
-    // const sources = Array(9).fill(samples.URL)
-
-    // const pipeEach = src => miner
-    //   .fetch(src)
-    //   .pick(samples.selector)
-    //   .pipe(function(){})
-
-    // const testEach = data => {
-    //   expect(data[1]).not.toHaveProperty('score')
-    //   expect(data[1]).toHaveProperty('link')
-    //   expect(data).toHaveLength(3)
-    // }
-
-    // const piped = await Promise.map(sources, pipeEach, {concurrency: 3})
-
-    // piped.forEach(testEach)
-  })
-
-  /* Раскомментируйте содержимое, доработайте тест 
-  и разработайте функциональную часть, ему удовлетворяющую */
-
-  test('Plug actions on the fly', async () => {
-    // const miner = await new Miner()
-    // const customPlugin = async (...args) => await args
-    // const customPlugin2 = async () => await previousData.reduce((a, b) => a + b, 0)
-    
-    // miner.plug(customPlugin, customPlugin2)
-
-    // const data = miner
-    //   .customPlugin(1, 2)
-    //   .customPlugin2()
-
-    // expect(data).toEqual(3)
-  })
-
-  /* Раскомментируйте содержимое, доработайте тест 
-  и разработайте функциональную часть, ему удовлетворяющую */
-
-  test('Plug actions on instance', async () => {
-
-    // const customPlugin = async (...args) => await args
-    // const customPlugin2 = async () => await previousPluginData.reduce((a, b) => a + b, 0)
-    
-    // const miner = await new Miner({
-    //   plugins: [
-    //     customPlugin,
-    //     customPlugin2
-    //   ]
-    // })
-
-    // const data = miner
-    //   .customPlugin(1, 2)
-    //   .customPlugin2()
-
-    // expect(data).toEqual(3)
-  })
-
-  /* Раскомментируйте содержимое, доработайте тест 
-  и разработайте функциональную часть, ему удовлетворяющую */
-
-  test('Nesting actions', async () => {
-
-    // const miner = await new Miner()
-
-    // const customPlugin = async (...args) => {
-    //   return await someContext
-    //     .fetch(samples.URL)
-    //     .pick(samples.selector)
-    //     .pipe(function(){})
-    // }
-    
-    // miner.plug(customPlugin)
-
-    // const data = miner.customPlugin()
-
-    // expect(data[1]).not.toHaveProperty('score')
-    // expect(data[1]).toHaveProperty('link')
-    // expect(data).toHaveLength(3)
-
-  })
-
-})
+    expect(pagesSubHeaders).toContain("Обратной стреловидности");
+  });
+});

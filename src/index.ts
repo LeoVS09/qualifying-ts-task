@@ -1,14 +1,27 @@
-import fetch from './plugins/fetch'
-import pick from './plugins/pick'
-import pipe from './plugins/pipe'
+export async function grabLinks(
+  url: string,
+  selectors: Array<string>
+): Promise<Array<string>> {
+  return [];
+}
 
-export default class Miner {
+export async function grabPaginationLinks(url: string): Promise<Array<string>> {
+  return [];
+}
 
-    constructor(){
+export interface Page {
+  url: string;
+  data: { [key: string]: any };
+}
 
-    }
-    
-    fetch(...args){}
-    pick(...args){}
-    pipe(...args){}
+export interface SearchDataSelectors {
+  [key: string]: string
+}
+
+export async function search(
+  start: string,
+  key: string,
+  dataSelectors?: SearchDataSelectors
+): Promise<Array<Page>> {
+  return [];
 }
